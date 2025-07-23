@@ -13,7 +13,7 @@ namespace PasswordHasher
             Console.WriteLine("3. Exit");
             Console.Write("\nChoice: ");
 
-            string choice = Console.ReadLine();
+            string choice = Console.ReadLine() ?? string.Empty;
 
             switch (choice)
             {
@@ -54,17 +54,17 @@ namespace PasswordHasher
             // Verify correct password
             Console.WriteLine("\nVerifying correct password...");
             bool isValid = hasher.VerifyPassword(password, hashedPassword);
-            Console.WriteLine($"Verification (correct): {(isValid ? "✓ Success" : "✗ Failed")}");
+            Console.WriteLine($"Verification (correct): {(isValid ? "Success" : "Failed")}");
 
             // Verify incorrect password
             Console.WriteLine("\nVerifying incorrect password...");
             bool isInvalid = hasher.VerifyPassword("WrongPassword", hashedPassword);
-            Console.WriteLine($"Verification (incorrect): {(isInvalid ? "✓ Success (This should be false!)" : "✗ Failed (Expected)")}");
+            Console.WriteLine($"Verification (incorrect): {(isInvalid ? "Success (This should be false!)" : "Failed (Expected)")}");
 
             // Interactive demo
             Console.WriteLine("\n--- Try Your Own Password ---");
             Console.Write("Enter a password to hash: ");
-            string userPassword = Console.ReadLine();
+            string userPassword = Console.ReadLine() ?? string.Empty;
 
             if (!string.IsNullOrEmpty(userPassword))
             {
@@ -73,16 +73,15 @@ namespace PasswordHasher
                 Console.WriteLine($"Your hash: {userHash}");
 
                 Console.Write("\nEnter password to verify: ");
-                string verifyPassword = Console.ReadLine();
+                string verifyPassword = Console.ReadLine() ?? string.Empty;
 
                 bool userValid = hasher.VerifyPassword(verifyPassword, userHash);
-                Console.WriteLine($"Verification: {(userValid ? "✓ Password matches!" : "✗ Password does not match!")}");
+                Console.WriteLine($"Verification: {(userValid ? "Password matches!" : "Password does not match!")}");
             }
         }
 
         static void RunPerformanceTest()
         {
-            Console.Clear();
             var monitor = new PerformanceMonitor();
             monitor.RunPerformanceTest();
         }

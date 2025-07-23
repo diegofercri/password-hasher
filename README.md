@@ -199,6 +199,10 @@ private const int MemorySize = 32768; // 32 MB instead of 64 MB
 - Comprehensive error handling
 - XML documentation
 
+### v1.0.1
+
+- Bug fixes
+
 ## 🤝 Contributing
 
 Contributions are welcome!
