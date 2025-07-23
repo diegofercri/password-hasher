@@ -1,4 +1,4 @@
-# 🔐 Argon2id Password Hasher for C
+# 🔐 Argon2id Password Hasher for CSharp
 
 A secure password hashing implementation using the Argon2id algorithm - winner of the Password Hashing Competition and recommended by OWASP.
 
@@ -66,73 +66,13 @@ class Program
 }
 ```
 
-### Integration with User Registration
-
-```csharp
-public class UserService
-{
-    private readonly PasswordHasher _hasher = new PasswordHasher();
-
-    public void RegisterUser(string username, string password)
-    {
-        // Hash the password before storing
-        string hashedPassword = _hasher.HashPassword(password);
-
-        // Save to database
-        SaveUser(username, hashedPassword);
-    }
-
-    public bool AuthenticateUser(string username, string password)
-    {
-        // Retrieve stored hash from database
-        string storedHash = GetStoredHash(username);
-
-        // Verify the password
-        return _hasher.VerifyPassword(password, storedHash);
-    }
-}
-```
-
-### ASP.NET Core Integration
-
-```csharp
-public class AccountController : Controller
-{
-    private readonly PasswordHasher _passwordHasher;
-
-    public AccountController()
-    {
-        _passwordHasher = new PasswordHasher();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Register(RegisterViewModel model)
-    {
-        if (ModelState.IsValid)
-        {
-            var user = new ApplicationUser
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                PasswordHash = _passwordHasher.HashPassword(model.Password)
-            };
-
-            // Save user to database
-            await _userManager.CreateAsync(user);
-        }
-
-        return View(model);
-    }
-}
-```
-
 ## ⚙️ Configuration
 
 ### Default Parameters
 
 | Parameter   | Value    | Description                          |
 | ----------- | -------- | ------------------------------------ |
-| Memory      | 64 MB    | RAM used during hashing              |
+| Memory      | 19 MB    | RAM used during hashing              |
 | Iterations  | 2        | Number of passes over memory         |
 | Parallelism | 1        | Number of parallel threads           |
 | Salt Size   | 128 bits | Cryptographically secure random salt |
@@ -140,9 +80,11 @@ public class AccountController : Controller
 
 ### Security Recommendations
 
-- **Low Security (fast)**: Memory: 64MB, Iterations: 2
-- **Medium Security (balanced)**: Memory: 128MB, Iterations: 3
-- **High Security (slow)**: Memory: 256MB, Iterations: 4
+**Modify your parameters**, keep your specific parameter choices (memory, iterations, salt/hash sizes) confidential for better security. Some examples:
+
+- **Low Security (fast)**: Memory: 19MB, Iterations: 2
+- **Medium Security (balanced)**: Memory: 64MB, Iterations: 3
+- **High Security (slow)**: Memory: 128MB, Iterations: 4
 
 ## 🔍 How It Works
 
@@ -163,19 +105,6 @@ Example output:
 "GqPGkEB6JvwNGkS9MSB8WBhp2XJwR9Xr49TCH7l9aPNQUFSXwEehDmDgMwzCQWZcMH1dIBz0nWQiOZ6YZMfVIg=="
 ```
 
-## ⚠️ Security Best Practices
-
-- **Never store passwords in plain text**
-- **Use HTTPS** when transmitting passwords
-- **Implement rate limiting** to prevent brute force attacks
-- **Consider password complexity requirements**
-- **Use secure session management** after authentication
-- **Keep the library updated** for security patches
-- **Monitor failed login attempts**
-- **Implement account lockout policies**
-- **Consider modifying salt/hash sizes** - The default 128-bit salt and 256-bit hash are secure, but using different values than the defaults adds an extra layer of obscurity
-- **Never expose your configuration** - Keep your specific parameter choices (memory, iterations, salt/hash sizes) confidential
-
 ## 🛠️ Troubleshooting
 
 ### OutOfMemoryException
@@ -191,14 +120,6 @@ private const int MemorySize = 32768; // 32 MB instead of 64 MB
 - Reduce iterations for development environments
 - Consider async hashing for web applications
 - Use caching for frequently verified passwords
-
-### Platform Compatibility
-
-Ensure the Konscious.Security.Cryptography package supports your platform:
-
-```bash
-dotnet --info
-```
 
 ## 📊 Performance Benchmarks
 
@@ -221,42 +142,25 @@ dotnet --info
 
 ### 📈 Performance Results
 
-#### Single Operation
+#### Hashing Performance
 
-| Operation  | Time   |
-| ---------- | ------ |
-| **Hash**   | 105 ms |
-| **Verify** | 101 ms |
+| Iteration | Time    | | Iteration | Time    |
+|-----------|---------|---|-----------|---------|
+| **1**     | 95 ms   | | **6**     | 95 ms   |
+| **2**     | 99 ms   | | **7**     | 79 ms   |
+| **3**     | 96 ms   | | **8**     | 42 ms   |
+| **4**     | 100 ms  | | **9**     | 45 ms   |
+| **5**     | 100 ms  | | **10**    | 43 ms   |
 
-#### Multiple Operations (10 iterations)
+#### Verification Performance
 
-##### Hashing Performance
-
-- Iteration 1: `95 ms`
-- Iteration 2: `99 ms`
-- Iteration 3: `96 ms`
-- Iteration 4: `100 ms`
-- Iteration 5: `100 ms`
-- Iteration 6: `95 ms`
-- Iteration 7: `79 ms`
-- Iteration 8: `42 ms`
-- Iteration 9: `45 ms`
-- Iteration 10: `43 ms`
-
-##### Verification Performance
-
-- Iteration 1: `44 ms`
-- Iteration 2: `40 ms`
-- Iteration 3: `44 ms`
-- Iteration 4: `42 ms`
-- Iteration 5: `43 ms`
-- Iteration 6: `46 ms`
-- Iteration 7: `41 ms`
-- Iteration 8: `42 ms`
-- Iteration 9: `45 ms`
-- Iteration 10: `40 ms`
-
-</details>
+| Iteration | Time    | | Iteration | Time    |
+|-----------|---------|---|-----------|---------|
+| **1**     | 44 ms   | | **6**     | 46 ms   |
+| **2**     | 40 ms   | | **7**     | 41 ms   |
+| **3**     | 44 ms   | | **8**     | 42 ms   |
+| **4**     | 42 ms   | | **9**     | 45 ms   |
+| **5**     | 43 ms   | | **10**    | 40 ms   |
 
 #### Password Length Impact
 
