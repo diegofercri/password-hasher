@@ -28,14 +28,6 @@ namespace PasswordHasher
         {
             Console.WriteLine("=== Argon2id Password Hasher Performance Test ===\n");
 
-            // Test configuration
-            Console.WriteLine("Configuration:");
-            Console.WriteLine("- Memory: 19 MB");
-            Console.WriteLine("- Iterations: 2");
-            Console.WriteLine("- Parallelism: 1");
-            Console.WriteLine("- Salt Size: 128 bits");
-            Console.WriteLine("- Hash Size: 256 bits\n");
-
             // Warm up
             Console.WriteLine("Warming up...");
             _hasher.HashPassword("warmup");
@@ -55,9 +47,6 @@ namespace PasswordHasher
             // Summary
             Console.WriteLine("\n=== Summary ===");
             PrintSummary();
-
-            Console.WriteLine("\nPress any key to exit...");
-            Console.ReadKey();
         }
 
         /// <summary>
@@ -80,7 +69,7 @@ namespace PasswordHasher
             verifyStopwatch.Stop();
 
             Console.WriteLine($"Verify Time: {verifyStopwatch.ElapsedMilliseconds} ms");
-            Console.WriteLine($"Verification Result: {(isValid ? "✓ Success" : "✗ Failed")}");
+            Console.WriteLine($"Verification Result: {(isValid ? "Success" : "Failed")}");
 
             _hashingTimes.Add(hashStopwatch.ElapsedMilliseconds);
             _verificationTimes.Add(verifyStopwatch.ElapsedMilliseconds);
@@ -177,19 +166,19 @@ namespace PasswordHasher
             Console.WriteLine("\nSecurity Analysis:");
             if (avgHashTime < 50)
             {
-                Console.WriteLine("⚠️  Very fast hashing detected. Consider increasing memory/iterations for better security.");
+                Console.WriteLine("Very fast hashing detected. Consider increasing memory/iterations for better security.");
             }
             else if (avgHashTime < 100)
             {
-                Console.WriteLine("✓ Good balance between security and performance.");
+                Console.WriteLine("Good balance between security and performance.");
             }
             else if (avgHashTime < 500)
             {
-                Console.WriteLine("✓ Strong security configuration. Suitable for high-security applications.");
+                Console.WriteLine("Strong security configuration. Suitable for high-security applications.");
             }
             else
             {
-                Console.WriteLine("⚠️  Hashing is quite slow. Consider reducing parameters if performance is critical.");
+                Console.WriteLine("Hashing is quite slow. Consider reducing parameters if performance is critical.");
             }
         }
     }
